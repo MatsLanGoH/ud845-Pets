@@ -16,19 +16,20 @@ public final class PetContract {
     /**
      * Inner class to define table contents.
      */
-    private static class PetEntry implements BaseColumns {
+    public static class PetEntry implements BaseColumns {
 
         /**
          * String constants for table name and headings
          */
         public static final String TABLE_NAME = "pets";
+        public static final String _ID = BaseColumns._ID;
         public static final String COLUMN_NAME_TITLE = "name";
         public static final String COLUMN_NAME_BREED = "breed";
         public static final String COLUMN_NAME_GENDER = "gender";
         public static final String COLUMN_NAME_WEIGHT = "weight";
 
         /**
-         * Constants for gender.
+         * Possible options for gender choice.
          */
         public static final int GENDER_MALE = 0;
         public static final int GENDER_FEMALE = 1;
