@@ -18,6 +18,7 @@ public final class PetContract {
      */
     public static class PetEntry implements BaseColumns {
 
+
         /**
          * String constants for table name and headings
          */
