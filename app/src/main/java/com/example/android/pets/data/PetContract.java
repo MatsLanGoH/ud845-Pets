@@ -31,9 +31,9 @@ public final class PetContract {
         /**
          * Possible options for gender choice.
          */
-        public static final int GENDER_MALE = 0;
-        public static final int GENDER_FEMALE = 1;
-        public static final int GENDER_UNKNOWN = 2;
+        public static final int GENDER_UNKNOWN = 0;
+        public static final int GENDER_MALE = 1;
+        public static final int GENDER_FEMALE = 2;
     }
 }
 
