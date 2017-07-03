@@ -58,6 +58,12 @@ public class CatalogActivity extends AppCompatActivity {
         displayDatabaseInfo();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        displayDatabaseInfo();
+    }
+
     /**
      * Helper method to insert hardcoded pet data into the database.
      * For debugging purposes only.
