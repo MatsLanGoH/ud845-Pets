@@ -76,8 +76,8 @@ public class CatalogActivity extends AppCompatActivity {
 
         // Insert the new row, returning the primary key value of the new row.
         long newRowId = db.insert(PetEntry.TABLE_NAME, null, dummyData);
-        Log.v(LOG_TAG, "New Row Id: " + newRowId);
-    }
+        Log.v(LOG_TAG, "New Row Id: " + newRowId); }
+
     /**
      * Temporary helper method to display information in the onscreen TextView about the state of
      * the pets database.

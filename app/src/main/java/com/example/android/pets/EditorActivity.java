@@ -15,10 +15,13 @@
  */
 package com.example.android.pets;
 
+import android.content.ContentValues;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,11 +31,15 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.example.android.pets.data.PetContract.PetEntry;
+import com.example.android.pets.data.PetDbHelper;
 
 /**
  * Allows user to create a new pet or edit an existing one.
  */
 public class EditorActivity extends AppCompatActivity {
+
+    /* LOG STRING */
+    private static final String LOG_CAT = EditorActivity.class.getSimpleName();
 
     /** EditText field to enter the pet's name */
     private EditText mNameEditText;
@@ -119,7 +126,10 @@ public class EditorActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             // Respond to a click on the "Save" menu option
             case R.id.action_save:
-                // Do nothing for now
+                // Insert a pet with the data entered.
+                insertPet();
+                // Return to the parent activity (CatalogActivity);
+//                NavUtils.navigateUpFromSameTask(this);
                 return true;
             // Respond to a click on the "Delete" menu option
             case R.id.action_delete:
@@ -132,5 +142,34 @@ public class EditorActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Get user input from editor and save new pet into the database.
+     */
+    private void insertPet() {
+        // TODO: Check for possible null input - display errors or refuse to accept submissions.
+
+        // Open writable database.
+        PetDbHelper mDbHelper = new PetDbHelper(this);
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+
+        // Read values from editor fields.
+        String nameString = mNameEditText.getText().toString().trim();
+        String breedString = mBreedEditText.getText().toString().trim();
+        int weight = Integer.parseInt(mWeightEditText.getText().toString().trim());
+        int genderValue = mGenderSpinner.getSelectedItemPosition();
+
+        // Create ContentValues
+        ContentValues petValues = new ContentValues();
+        petValues.put(PetEntry.COLUMN_PET_NAME, nameString);
+        petValues.put(PetEntry.COLUMN_PET_BREED, breedString);
+        petValues.put(PetEntry.COLUMN_PET_GENDER, genderValue);
+        petValues.put(PetEntry.COLUMN_PET_WEIGHT, weight);
+
+        // Insert row into database
+        db.insert(PetEntry.TABLE_NAME, null, petValues);
+
+        // TODO: Refresh database (probably not in here, but still)
     }
 }
