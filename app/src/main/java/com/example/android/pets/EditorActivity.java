@@ -126,10 +126,10 @@ public class EditorActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             // Respond to a click on the "Save" menu option
             case R.id.action_save:
-                // Insert a pet with the data entered.
+                // Save pet to database.
                 insertPet();
-                // Return to the parent activity (CatalogActivity);
-//                NavUtils.navigateUpFromSameTask(this);
+                // Exit activity
+                finish();
                 return true;
             // Respond to a click on the "Delete" menu option
             case R.id.action_delete:
@@ -167,24 +167,22 @@ public class EditorActivity extends AppCompatActivity {
         if (mWeightEditText.getText().length() > 1) {
             weightValue = Integer.parseInt(mWeightEditText.getText().toString().trim());
         }
-        // Read values from editor fields.
-        int genderValue = mGenderSpinner.getSelectedItemPosition();
 
         // Create ContentValues
         ContentValues petValues = new ContentValues();
         petValues.put(PetEntry.COLUMN_PET_NAME, nameString);
         petValues.put(PetEntry.COLUMN_PET_BREED, breedString);
-        petValues.put(PetEntry.COLUMN_PET_GENDER, genderValue);
+        petValues.put(PetEntry.COLUMN_PET_GENDER, mGender);
         petValues.put(PetEntry.COLUMN_PET_WEIGHT, weightValue);
 
         // Insert row into database
-        long newPetId = db.insert(PetEntry.TABLE_NAME, null, petValues);
+        long newRowId = db.insert(PetEntry.TABLE_NAME, null, petValues);
 
         // Show message depending on success.
-        if (newPetId != -1) {
-            Toast.makeText(this, "Pet saved with id: " + String.valueOf(newPetId), Toast.LENGTH_SHORT).show();
-        } else {
+        if (newRowId == -1) {
             Toast.makeText(this, "Error with saving pet", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Pet saved with id: " + String.valueOf(newRowId), Toast.LENGTH_SHORT).show();
         }
     }
 }
