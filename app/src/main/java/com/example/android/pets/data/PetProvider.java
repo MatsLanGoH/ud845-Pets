@@ -16,18 +16,27 @@ public class PetProvider extends ContentProvider {
     /** Database helper object */
     private PetDbHelper mDbHelper;
 
+    /**
+     * Initialize the provider and the database helper object.
+     */
     @Override
     public boolean onCreate() {
         mDbHelper = new PetDbHelper(getContext());
         return true;
     }
 
+    /**
+     * Perform the query for the given URI. Use the given projection, selection, selection arguments, and sort order.
+     */
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
         return null;
     }
 
+    /**
+     * Returns the MIME type of data for the content URI.
+     */
     @Nullable
     @Override
     public String getType(@NonNull Uri uri) {
@@ -40,11 +49,17 @@ public class PetProvider extends ContentProvider {
         return null;
     }
 
+    /**
+     * Delete the data at the given selection and selection arguments.
+     */
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
         return 0;
     }
 
+    /**
+     * Updates the data at the given selection and selection arguments.
+     */
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
         return 0;
