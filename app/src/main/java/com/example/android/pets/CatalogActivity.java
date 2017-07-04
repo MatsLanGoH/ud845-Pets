@@ -30,6 +30,7 @@ import android.widget.TextView;
 
 import com.example.android.pets.data.PetContract.PetEntry;
 import com.example.android.pets.data.PetDbHelper;
+
 /**
  * Displays list of pets that were entered and stored in the app.
  */
@@ -82,7 +83,8 @@ public class CatalogActivity extends AppCompatActivity {
 
         // Insert the new row, returning the primary key value of the new row.
         long newRowId = db.insert(PetEntry.TABLE_NAME, null, dummyData);
-        Log.v(LOG_TAG, "New Row Id: " + newRowId); }
+        Log.v(LOG_TAG, "New Row Id: " + newRowId);
+    }
 
     /**
      * Temporary helper method to display information in the onscreen TextView about the state of
@@ -153,10 +155,10 @@ public class CatalogActivity extends AppCompatActivity {
 
                 // Display the values from each column of the current row in the cursor in the TextView
                 displayView.append(("\n" + currentId + " - " +
-                         currentName + " - " +
-                         currentBreed + " - " +
-                         currentGender + " - " +
-                         currentWeight));
+                        currentName + " - " +
+                        currentBreed + " - " +
+                        currentGender + " - " +
+                        currentWeight));
             }
         } finally {
             // Always close the cursor when you're done reading from it. This releases all its
