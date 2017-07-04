@@ -23,7 +23,7 @@ public final class PetContract {
          * String constants for table name and headings
          */
         public static final String TABLE_NAME = "pets";
-        static final String _ID = BaseColumns._ID;
+        public static final String _ID = BaseColumns._ID;
         public static final String COLUMN_PET_NAME = "name";
         public static final String COLUMN_PET_BREED = "breed";
         public static final String COLUMN_PET_GENDER = "gender";
