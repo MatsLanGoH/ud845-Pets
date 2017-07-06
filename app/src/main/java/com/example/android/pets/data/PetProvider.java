@@ -76,6 +76,7 @@ public class PetProvider extends ContentProvider {
         switch (match) {
             case PETS:
                 // TODO: Perform database query on pets table
+                cursor = database.query(PetContract.PetEntry.TABLE_NAME, projection, null, null, null, null, sortOrder);
                 break;
             case PETS_ID:
                 selection = PetContract.PetEntry._ID + "=?";
