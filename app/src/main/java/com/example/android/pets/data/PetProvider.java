@@ -75,12 +75,19 @@ public class PetProvider extends ContentProvider {
 
         switch (match) {
             case PETS:
-                // TODO: Perform database query on pets table
-                cursor = database.query(PetContract.PetEntry.TABLE_NAME, projection, null, null, null, null, sortOrder);
+                // For the PETS code, query the pets table directly with the given
+                // projection, selection, selection arguments, and sort order.
+                // The cursor could contain multiple rows of the pets table.
+                cursor = database.query(PetContract.PetEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
                 break;
             case PETS_ID:
+                // For the PETS_ID code, extract out the ID from the URI.
+                // For every "?" in the selection, we need to have an element in the selection
+                // arguments that will fill in the "?". Since we have 1 question mark in the
+                // selection, we have 1 String in the selection arguments String array.
                 selection = PetContract.PetEntry._ID + "=?";
                 selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
+
                 cursor = database.query(PetContract.PetEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
                 break;
             default:
