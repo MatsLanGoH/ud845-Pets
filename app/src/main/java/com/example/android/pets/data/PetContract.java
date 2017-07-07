@@ -9,6 +9,10 @@ import android.provider.BaseColumns;
 
 public final class PetContract {
 
+    // Make the constructor private to prevent accidental instantiation.
+    private PetContract() {
+    }
+
     /** Content URI - authority */
     public static final String CONTENT_AUTHORITY = "com.example.android.pets";
 
@@ -17,12 +21,6 @@ public final class PetContract {
 
     /** Content URI - table name */
     public static final String PATH_PETS = "pets";
-
-
-
-    // Make the constructor private to prevent accidental instantiation.
-    private PetContract() {
-    }
 
     /**
      * Inner class to define table contents.

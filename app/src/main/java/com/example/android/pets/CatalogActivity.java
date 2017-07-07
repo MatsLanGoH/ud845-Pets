@@ -18,11 +18,9 @@ package com.example.android.pets;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -71,9 +69,6 @@ public class CatalogActivity extends AppCompatActivity {
      */
     private void insertPet() {
 
-        // Get writable database
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-
         // Create a set of dummy values.
         ContentValues dummyData = new ContentValues();
         dummyData.put(PetEntry.COLUMN_PET_NAME, "Tabby");
@@ -81,9 +76,8 @@ public class CatalogActivity extends AppCompatActivity {
         dummyData.put(PetEntry.COLUMN_PET_GENDER, PetEntry.GENDER_MALE);
         dummyData.put(PetEntry.COLUMN_PET_WEIGHT, 7);
 
-        // Insert the new row, returning the primary key value of the new row.
-        long newRowId = db.insert(PetEntry.TABLE_NAME, null, dummyData);
-        Log.v(LOG_TAG, "New Row Id: " + newRowId);
+        // Insert the new row.
+        getContentResolver().insert(PetEntry.CONTENT_URI, dummyData);
     }
 
     /**
@@ -101,18 +95,7 @@ public class CatalogActivity extends AppCompatActivity {
         };
 
         // Perform a SQL query using the projection
-        // to get a Cursors that contains the rows specified from the pets table.
-        /**
-         Cursor cursor = db.query(
-                PetEntry.TABLE_NAME,
-                projection,
-                null,
-                null,
-                null,
-                null,
-                null
-        );
-         */
+        // to get a Cursor that contains the rows specified from the pets table.
         Cursor cursor = getContentResolver().query(PetEntry.CONTENT_URI, projection, null, null, null);
 
         TextView displayView = (TextView) findViewById(R.id.text_view_pet);
