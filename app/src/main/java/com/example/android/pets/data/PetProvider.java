@@ -134,10 +134,10 @@ public class PetProvider extends ContentProvider {
             throw new IllegalArgumentException("Pet requires a name");
         }
 
-        // Check that the weight is positive and not too large
+        // If the weight is provided, check that it's greater than or equal to 0 kg
         int weight = values.getAsInteger(PetEntry.COLUMN_PET_WEIGHT);
-        if (weight <= 0 || weight > 160) {  // World's heaviest dog had 150 kilos.
-            throw new IllegalArgumentException("Weight needs to be a sane value");
+        if (weight != 0 && weight < 0) {
+            throw new IllegalArgumentException("Pet requires valid weight");
         }
 
         // Check that the gender value is valid
@@ -199,15 +199,42 @@ public class PetProvider extends ContentProvider {
      */
     private int updatePet(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
 
-        // TODO: Sanity check values.
+        // If the {@link PetEntry#COLUMN_PET_NAME} key is present,
+        // check that the name value is not null.
+        if (values.containsKey(PetEntry.COLUMN_PET_NAME)) {
+            String name = values.getAsString(PetEntry.COLUMN_PET_NAME);
+            if (name == null) {
+                throw new IllegalArgumentException("Pet requires a name");
+            }
+        }
 
-        // TODO: Update the selected pets in the pets database table with the given values.
+        // If the {@link PetEntry#COLUMN_PET_GENDER} key is present,
+        // check that the gender value is valid.
+        if (values.containsKey(PetEntry.COLUMN_PET_GENDER)) {
+            Integer gender = values.getAsInteger(PetEntry.COLUMN_PET_GENDER);
+            if (gender == null || !PetEntry.isValidGender(gender)) {
+                throw new IllegalArgumentException("Pet requires a valid gender");
+            }
+        }
+
+        // If the {@link PetEntry#COLUMN_PET_WEIGHT} key is present,
+        // check that the weight value is valid.
+        if (values.containsKey(PetEntry.COLUMN_PET_WEIGHT)) {
+            int weight = values.getAsInteger(PetEntry.COLUMN_PET_WEIGHT);
+            if (weight != 0 && weight < 0) {
+                throw new IllegalArgumentException("Pet requires valid weight");
+            }
+        }
+
+        // If there are no values to update, then don't try to update the database.
+        if (values.size() == 0) {
+            return 0;
+        }
+
         // Get writable database.
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
         // Return the number of rows that were affected.
-        int numRows = db.update(PetEntry.TABLE_NAME, values, selection, selectionArgs);
-
-        return numRows;
+        return db.update(PetEntry.TABLE_NAME, values, selection, selectionArgs);
     }
 }
