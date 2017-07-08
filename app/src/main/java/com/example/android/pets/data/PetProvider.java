@@ -9,12 +9,15 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 /**
  * {@link ContentProvider} for Pets app.
  */
 
 public class PetProvider extends ContentProvider {
+
+    private static final String LOG_TAG = PetProvider.class.getSimpleName();
 
     /** Database helper object */
     private PetDbHelper mDbHelper;
@@ -128,6 +131,12 @@ public class PetProvider extends ContentProvider {
 
         // Insert a new pet into the pets database table with the given ContentValues
         long id = db.insert(PetContract.PetEntry.TABLE_NAME, null, values);
+
+        // Show message depending on success.
+        if (id == -1) {
+            Log.e(LOG_TAG, "Failed to insert row for " + uri);
+            return null;
+        }
 
         // Once we know the ID of the new row in the table,
         // return the new URI with the ID appended to the end of it.
