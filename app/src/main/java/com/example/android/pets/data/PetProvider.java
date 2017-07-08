@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import com.example.android.pets.data.PetContract.PetEntry;
 
 /**
  * {@link ContentProvider} for Pets app.
@@ -81,17 +82,17 @@ public class PetProvider extends ContentProvider {
                 // For the PETS code, query the pets table directly with the given
                 // projection, selection, selection arguments, and sort order.
                 // The cursor could contain multiple rows of the pets table.
-                cursor = database.query(PetContract.PetEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
+                cursor = database.query(PetEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
                 break;
             case PETS_ID:
                 // For the PETS_ID code, extract out the ID from the URI.
                 // For every "?" in the selection, we need to have an element in the selection
                 // arguments that will fill in the "?". Since we have 1 question mark in the
                 // selection, we have 1 String in the selection arguments String array.
-                selection = PetContract.PetEntry._ID + "=?";
+                selection = PetEntry._ID + "=?";
                 selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
 
-                cursor = database.query(PetContract.PetEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
+                cursor = database.query(PetEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
                 break;
             default:
                 throw new IllegalArgumentException("Cannot query unknown URI " + uri);
@@ -126,11 +127,30 @@ public class PetProvider extends ContentProvider {
      */
     private Uri insertPet(Uri uri, ContentValues values) {
 
-        // Connect to the database first
+        // Validate ContentValues data before insertion.
+        // Check that the name is not null
+        String name = values.getAsString(PetEntry.COLUMN_PET_NAME);
+        if (name == null) {
+            throw new IllegalArgumentException("Pet requires a name");
+        }
+
+        // Check that the breed is not null
+        String breed = values.getAsString(PetEntry.COLUMN_PET_BREED);
+        if (breed == null) {
+            throw new IllegalArgumentException("Pet requires a breed");
+        }
+
+        // Check that the weight is positive and not too large
+        int weight = values.getAsInteger(PetEntry.COLUMN_PET_WEIGHT);
+        if (weight <= 0 || weight > 160) {  // World's heaviest dog had 150 kilos.
+            throw new IllegalArgumentException("Weight needs to be a sane value");
+        }
+
+        // Get writable database
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
         // Insert a new pet into the pets database table with the given ContentValues
-        long id = db.insert(PetContract.PetEntry.TABLE_NAME, null, values);
+        long id = db.insert(PetEntry.TABLE_NAME, null, values);
 
         // Show message depending on success.
         if (id == -1) {
@@ -156,6 +176,19 @@ public class PetProvider extends ContentProvider {
      */
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
-        return 0;
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            case PETS:
+                return updatePet(uri, values, selection, selectionArgs);
+            case PETS_ID:
+                // For the PETS_ID code, extract out the ID from the URI,
+                // so we know which row to update. Selection will be "_id=?" and
+                // selection arguments will be a String array containing the actual ID.
+                selection = PetEntry._ID + "=?";
+                selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
+                return updatePet(uri, values, selection, selectionArgs);
+            default:
+                throw new IllegalArgumentException("Update is not supported for " + uri);
+        }
     }
 }
