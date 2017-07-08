@@ -134,16 +134,16 @@ public class PetProvider extends ContentProvider {
             throw new IllegalArgumentException("Pet requires a name");
         }
 
-        // Check that the breed is not null
-        String breed = values.getAsString(PetEntry.COLUMN_PET_BREED);
-        if (breed == null) {
-            throw new IllegalArgumentException("Pet requires a breed");
-        }
-
         // Check that the weight is positive and not too large
         int weight = values.getAsInteger(PetEntry.COLUMN_PET_WEIGHT);
         if (weight <= 0 || weight > 160) {  // World's heaviest dog had 150 kilos.
             throw new IllegalArgumentException("Weight needs to be a sane value");
+        }
+
+        // Check that the gender value is valid
+        Integer gender = values.getAsInteger(PetEntry.COLUMN_PET_GENDER);
+        if (gender == null || !PetEntry.isValidGender(gender)) {
+            throw new IllegalArgumentException("Pet requires valid gender");
         }
 
         // Get writable database
@@ -190,5 +190,24 @@ public class PetProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Update is not supported for " + uri);
         }
+    }
+
+    /**
+     * Update pets in the database with the given content values. Apply the changes to the rows
+     * specified in the selection and selection arguments (which could be 0 or 1 or more pets)
+     * Return the number of rows that were successfully updated.
+     */
+    private int updatePet(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+
+        // TODO: Sanity check values.
+
+        // TODO: Update the selected pets in the pets database table with the given values.
+        // Get writable database.
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+
+        // Return the number of rows that were affected.
+        int numRows = db.update(PetEntry.TABLE_NAME, values, selection, selectionArgs);
+
+        return numRows;
     }
 }
