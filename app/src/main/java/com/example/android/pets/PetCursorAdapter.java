@@ -54,16 +54,15 @@ public class PetCursorAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         // Find fields to populate in inflated template
-        TextView tvName = (TextView) view.findViewById(R.id.name);
-        TextView tvSummary = (TextView) view.findViewById(R.id.summary);
+        TextView nameTextView = (TextView) view.findViewById(R.id.name);
+        TextView summaryTextView = (TextView) view.findViewById(R.id.summary);
 
         // Extract properties from cursor
-        String name = cursor.getString(cursor.getColumnIndex(PetEntry.COLUMN_PET_NAME));
-        // TODO: Display a summary string of breed/ weight/ gender instead.
-        String summary = cursor.getString(cursor.getColumnIndex(PetEntry.COLUMN_PET_BREED));
+        String petName = cursor.getString(cursor.getColumnIndex(PetEntry.COLUMN_PET_NAME));
+        String petBreed = cursor.getString(cursor.getColumnIndex(PetEntry.COLUMN_PET_BREED));
 
         // Populate fields with extracted properties
-        tvName.setText(name);
-        tvSummary.setText(summary);
+        nameTextView.setText(petName);
+        summaryTextView.setText(petBreed);
     }
 }
