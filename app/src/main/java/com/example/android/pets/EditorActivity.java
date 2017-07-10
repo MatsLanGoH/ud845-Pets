@@ -38,7 +38,7 @@ import com.example.android.pets.data.PetContract.PetEntry;
 public class EditorActivity extends AppCompatActivity {
 
     /* LOG STRING */
-    private static final String LOG_CAT = EditorActivity.class.getSimpleName();
+    private static final String LOG_TAG = EditorActivity.class.getSimpleName();
 
     /** EditText field to enter the pet's name */
     private EditText mNameEditText;
@@ -62,6 +62,20 @@ public class EditorActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editor);
+
+        // Use getItem() and getData() to get the associated URI
+        Uri currentPetUri = getIntent().getData();
+
+        // Set title of EditorActivity on which situation we have
+        // If the intent DOES NOT contain a pet content URI, then we know that we are
+        // creating a new pet.
+        if (currentPetUri == null) {
+            // This is a new pet, so change the app bar to say "Add a Pet"
+            setTitle(getString(R.string.editor_activity_title_new_pet));
+        } else {
+            // Otherwise if this is an existing pet, so change app bar to say "Edit Pet"
+            setTitle(getString(R.string.editor_activity_title_edit_pet));
+        }
 
         // Find all relevant views that we will need to read user input from
         mNameEditText = (EditText) findViewById(R.id.edit_pet_name);
