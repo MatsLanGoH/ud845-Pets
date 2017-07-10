@@ -97,6 +97,13 @@ public class PetProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Cannot query unknown URI " + uri);
         }
+
+        // Set notification URI on the Cursor,
+        // so we know  what content URI the Cursor was created for.
+        // If the data at this URI changes, than we know we need to update the Cursor.
+        cursor.setNotificationUri(getContext().getContentResolver(), uri);
+
+        // Return the Cursor
         return cursor;
     }
 
@@ -166,6 +173,9 @@ public class PetProvider extends ContentProvider {
             return null;
         }
 
+        // Notify all listeners that the data has changed for the pet content URI
+        getContext().getContentResolver().notifyChange(uri, null);
+
         // Once we know the ID of the new row in the table,
         // return the new URI with the ID appended to the end of it.
         return ContentUris.withAppendedId(uri, id);
@@ -195,8 +205,20 @@ public class PetProvider extends ContentProvider {
         // Get writable database.
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
-        // Delete entry.
-        return db.delete(PetEntry.TABLE_NAME, selection, selectionArgs);
+        // Track the number of rows deleted
+        // Delete a single row given by the ID in the URI
+        int rowsDeleted = db.delete(PetEntry.TABLE_NAME, selection, selectionArgs);
+
+        // If 1 or more rows were deleted, then notify all the listeners that the data at the
+        // given URI has changed.
+        if (rowsDeleted != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
+        // Return the number of rows deleted.
+        return rowsDeleted;
+
+
     }
 
     /**
@@ -262,7 +284,16 @@ public class PetProvider extends ContentProvider {
         // Get writable database.
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
-        // Return the number of rows that were affected.
-        return db.update(PetEntry.TABLE_NAME, values, selection, selectionArgs);
+        // Perform the number of rows that were affected.
+        int rowsUpdated = db.update(PetEntry.TABLE_NAME, values, selection, selectionArgs);
+
+        // If 1 or more rows were updated, then notify all the listeners that the data at the
+        // given URI has changed.
+        if (rowsUpdated >= 1) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
+        // Return the number of rows updated.
+        return rowsUpdated;
     }
 }
