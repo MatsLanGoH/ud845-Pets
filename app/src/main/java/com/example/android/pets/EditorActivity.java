@@ -186,9 +186,17 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             breedString = mBreedEditText.getText().toString().trim();
         }
 
+        // Set initial value to 0 - in case no weight is set, this can be used as te initial weight.
         int weightValue = 0;
         if (mWeightEditText.getText().length() > 1) {
             weightValue = Integer.parseInt(mWeightEditText.getText().toString().trim());
+        }
+
+        // Return early if all fields are empty
+        if (TextUtils.isEmpty(nameString) && TextUtils.isEmpty(breedString) && mGender == PetEntry.GENDER_UNKNOWN) {
+            return;
+        } else if (TextUtils.isEmpty(nameString)) {  // or if no name has been given for the pet.
+            return;
         }
 
         // Create ContentValues
