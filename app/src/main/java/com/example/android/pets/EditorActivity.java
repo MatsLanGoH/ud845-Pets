@@ -153,7 +153,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             // Respond to a click on the "Save" menu option
             case R.id.action_save:
                 // Save pet to database.
-                insertPet();
+                savePet();
                 // Exit activity
                 finish();
                 return true;
@@ -173,7 +173,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     /**
      * Get user input from editor and save new pet into the database.
      */
-    private void insertPet() {
+    private void savePet() {
 
         // Validate EditText fields.
         String nameString = null;
@@ -198,14 +198,25 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         petValues.put(PetEntry.COLUMN_PET_GENDER, mGender);
         petValues.put(PetEntry.COLUMN_PET_WEIGHT, weightValue);
 
-        // Insert row into database
-        Uri newUri = getContentResolver().insert(PetEntry.CONTENT_URI, petValues);
+        // Insert new pet if this is a new pet, otherwise update existing pet.
+        if (mCurrentPetUri == null) {
+            // Insert row into database
+            Uri newUri = getContentResolver().insert(PetEntry.CONTENT_URI, petValues);
 
-        // Show message depending on success.
-        if (newUri == null) {
-            Toast.makeText(this, getString(R.string.editor_insert_pet_failed), Toast.LENGTH_SHORT).show();
+            // Show message depending on success.
+            if (newUri == null) {
+                Toast.makeText(this, getString(R.string.editor_insert_pet_failed), Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, getString(R.string.editor_insert_pet_successful), Toast.LENGTH_SHORT).show();
+            }
         } else {
-            Toast.makeText(this, getString(R.string.editor_insert_pet_successful), Toast.LENGTH_SHORT).show();
+            int rowsUpdated = getContentResolver().update(mCurrentPetUri, petValues, null, null);
+
+            if (rowsUpdated == 0) {
+                Toast.makeText(this, getString(R.string.editor_edit_pet_failed), Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, getString(R.string.editor_edit_pet_success), Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
