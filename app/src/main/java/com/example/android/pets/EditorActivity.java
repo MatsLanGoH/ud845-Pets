@@ -186,9 +186,9 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             breedString = mBreedEditText.getText().toString().trim();
         }
 
-        // Set initial value to 0 - in case no weight is set, this can be used as te initial weight.
+        // Set initial value to 0 - in case no weight is set, this can be used as the initial weight.
         int weightValue = 0;
-        if (mWeightEditText.getText().length() > 1) {
+        if (mWeightEditText.getText().length() > 0) {
             weightValue = Integer.parseInt(mWeightEditText.getText().toString().trim());
         }
 
