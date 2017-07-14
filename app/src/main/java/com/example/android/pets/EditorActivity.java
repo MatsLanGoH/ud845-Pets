@@ -254,9 +254,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
      */
     private void deletePet() {
         // Only perform the delete if this is an existing pet.
-        if (mCurrentPetUri == null) {
-            return;
-        } else {
+        if (mCurrentPetUri != null) {
             // Call the ContentResolver to delete the pet at the given content URI.
             // Pass in null for the selection and selection args because the mCurrentPetUri
             // content URI already identifies the pet that we want.
